@@ -1,0 +1,110 @@
+/**
+ * Core Philosophy: This ruleset enforces a user-centric security model.
+ * Users have full control over their own data in the /users/{userId} path,
+ * but cannot access data belonging to other users. All other collections
+ * remain publicly readable to support the app's core functionality of
+ * displaying trend data.
+ *
+ * Data Structure:
+ * - /users/{userId}: Private user-specific data, including profile info.
+ * - /trends, /countries, etc.: Publicly accessible data.
+ *
+ * Key Security Decisions:
+ * - User Data Privacy: Users can only read and write to their own document
+ *   within the /users collection, identified by their UID. This is enforced
+ *   by the `request.auth.uid == userId` check.
+ * - Public Read Access: Collections like 'trends', 'countries', etc., remain
+ *   publicly readable to allow all users (authenticated or not) to view
+ *   the main content of the application.
+ * - Client Writes Disabled (for public data): To maintain data integrity,
+ *   all client-side write permissions on public collections are denied.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Controls access to user-specific data. Allows a user to read and write
+     *              to their own document but denies access to others' documents.
+     * @path        /users/{userId}
+     * @allow       A signed-in user can read/write their own document (e.g., `(get) /users/my-uid`).
+     * @deny        A user cannot access another user's document (e.g., `(get) /users/another-uid`).
+     * @principle   Enforces user data privacy and ownership.
+     */
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /drafts/{draftId} {
+        allow read, list, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /transactions/{transactionId} {
+        allow read, list, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    /**
+     * @description Controls access to the 'trends' collection. Allows public
+     *              read access but completely denies any client-side writes.
+     * @path        /trends/{trendId}
+     * @allow       Any user, signed-in or anonymous, can read a trend document. (e.g., `(get) /trends/some-trend`)
+     * @deny        No user can create, update, or delete a trend document. (e.g., `(create) /trends/new-trend`)
+     * @principle   Publicly readable data with writes disabled for clients to ensure data integrity.
+     */
+    match /trends/{trendId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Controls access to the 'countries' collection. Allows public
+     *              read access but completely denies any client-side writes.
+     * @path        /countries/{countryCode}
+     * @allow       Any user, signed-in or anonymous, can read a country document. (e.g., `(get) /countries/US`)
+     * @deny        No user can create, update, or delete a country document. (e.g., `(create) /countries/CA`)
+     * @principle   Publicly readable data with writes disabled for clients to ensure data integrity.
+     */
+    match /countries/{countryCode} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Controls access to the 'ai_agents' collection. Allows public
+     *              read access but completely denies any client-side writes.
+     * @path        /ai_agents/{aiAgentId}
+     * @allow       Any user, signed-in or anonymous, can read an AI agent document. (e.g., `(get) /ai_agents/agent-123`)
+     * @deny        No user can create, update, or delete an AI agent document. (e.g., `(create) /ai_agents/agent-456`)
+     * @principle   Publicly readable data with writes disabled for clients to ensure data integrity.
+     */
+    match /ai_agents/{aiAgentId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Controls access to the 'video_scripts' collection. Allows public
+     *              read access but completely denies any client-side writes.
+     * @path        /video_scripts/{videoScriptId}
+     * @allow       Any user, signed-in or anonymous, can read a video script. (e.g., `(get) /video_scripts/script-abc`)
+     * @deny        No user can create, update, or delete a video script. (e.g., `(create) /video_scripts/script-def`)
+     * @principle   Publicly readable data with writes disabled for clients to ensure data integrity.
+     */
+    match /video_scripts/{videoScriptId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

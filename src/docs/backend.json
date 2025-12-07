@@ -1,0 +1,142 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile and their usage.",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "plan": { "type": "string", "enum": ["Starter", "Pro", "Yearly"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "currentPeriodEnd": { "type": "string", "format": "date-time" },
+        "usage": {
+          "type": "object",
+          "properties": {
+            "posts": {
+              "type": "object",
+              "properties": { "used": { "type": "number" }, "total": { "type": "number" } }
+            },
+            "images": {
+              "type": "object",
+              "properties": { "used": { "type": "number" }, "total": { "type": "number" } }
+            },
+            "scripts": {
+              "type": "object",
+              "properties": { "used": { "type": "number" }, "total": { "type": "number" } }
+            },
+            "agents": {
+              "type": "object",
+              "properties": { "used": { "type": "number" }, "total": { "type": "number" } }
+            }
+          }
+        }
+      },
+      "required": ["name", "email", "plan", "createdAt", "usage"]
+    },
+    "Draft": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Draft",
+      "type": "object",
+      "description": "Represents a saved content draft for a user.",
+      "properties": {
+        "type": { "type": "string", "enum": ["post", "image", "script", "bot"] },
+        "content": { "type": "object" },
+        "topic": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "content", "topic", "createdAt"]
+    },
+    "Trend": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Trend",
+      "type": "object",
+      "description": "Represents a trending topic with associated data.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the trend." },
+        "topic": { "type": "string", "description": "The main topic of the trend." },
+        "fullTitle": { "type": "string", "description": "The full title of the trend, which may be longer than the topic." },
+        "volume": { "type": "number", "description": "The volume or popularity score of the trend." },
+        "growth": { "type": "number", "description": "The growth rate of the trend." },
+        "sparkline": { "type": "array", "description": "Array of numbers representing the sparkline data for the trend.", "items": { "type": "number" } },
+        "category": { "type": "string", "description": "The category of the trend (e.g., General, Technology)." },
+        "region": { "type": "string", "description": "The region or country where the trend is popular." },
+        "url": { "type": "string", "description": "URL associated with the trend.", "format": "uri" }
+      },
+      "required": ["id", "topic", "volume", "growth", "sparkline", "region"]
+    },
+    "Country": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Country",
+      "type": "object",
+      "description": "Represents a country for trend analysis.",
+      "properties": {
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "sub": { "type": "string" }
+      },
+      "required": ["code", "name"]
+    },
+    "AiAgent": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AiAgent",
+      "type": "object",
+      "description": "Represents an AI agent configuration for a specific trend.",
+      "properties": {
+        "id": { "type": "string" },
+        "trendId": { "type": "string" },
+        "name": { "type": "string" },
+        "status": { "type": "string" },
+        "preview": { "type": "string" }
+      },
+      "required": ["id", "trendId", "name", "status", "preview"]
+    },
+    "VideoScript": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "VideoScript",
+      "type": "object",
+      "description": "Represents a video script generated for a specific trend.",
+      "properties": {
+        "id": { "type": "string" },
+        "trendId": { "type": "string" },
+        "time": { "type": "string" },
+        "text": { "type": "string" }
+      },
+      "required": ["id", "trendId", "time", "text"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous",
+      "google.com"
+    ]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores user profile information and usage data. Each document is owned by a single user."
+    },
+    "/users/{userId}/drafts/{draftId}": {
+      "schema": { "$ref": "#/entities/Draft" },
+      "description": "Stores content drafts created by the user."
+    },
+    "/trends/{trendId}": {
+      "schema": { "$ref": "#/entities/Trend" },
+      "description": "Stores trending topics with associated metadata. This data is publicly readable."
+    },
+    "/countries/{countryCode}": {
+      "schema": { "$ref": "#/entities/Country" },
+      "description": "Stores country data for regional trend analysis. This data is publicly readable."
+    },
+    "/ai_agents/{aiAgentId}": {
+      "schema": { "$ref": "#/entities/AiAgent" },
+      "description": "Stores AI agent configurations. This data is publicly readable."
+    },
+    "/video_scripts/{videoScriptId}": {
+      "schema": { "$ref": "#/entities/VideoScript" },
+      "description": "Stores video scripts generated for specific trends. This data is publicly readable."
+    }
+  }
+}
