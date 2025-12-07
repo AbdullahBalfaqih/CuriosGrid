@@ -12,7 +12,7 @@ import {
     signOut,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    signInWithRedirect,
+    signInWithPopup,
     GoogleAuthProvider,
     getRedirectResult,
     User as FirebaseUser,
@@ -206,37 +206,47 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const { toast } = useToast();
 
     useEffect(() => {
-        if (!auth || !firestore) {
+        const processRedirectResult = async () => {
+            if (auth) {
+                try {
+                    const result = await getRedirectResult(auth);
+                    if (result) {
+                        toast({
+                            title: "Signed In",
+                            description: `Welcome ${result.user.displayName}`,
+                        });
+                        await getOrCreateUserProfile(result.user, firestore);
+                    }
+                } catch (error: any) {
+                    console.error("Redirect Result Error:", error);
+                    toast({
+                        variant: "destructive",
+                        title: "Sign-In Failed",
+                        description: "Could not complete sign-in. Please try again."
+                    });
+                }
+            }
+        };
+        processRedirectResult();
+    }, [auth, firestore, toast]);
+
+    // This effect listens for changes in the authentication state (sign-in, sign-out).
+    useEffect(() => {
+        if (!auth) {
             setIsLoggedIn(false);
             return;
         }
 
-        // Handle the redirect result from Google sign-in
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result && result.user) {
-                    // This creates the user profile if it's their first time.
-                    getOrCreateUserProfile(result.user, firestore);
-                }
-            })
-            .catch((error) => {
-                console.error("Google sign-in redirect error:", error);
-            });
-
-        const unsubscribeAuth = onAuthStateChanged(auth, async (fbUser) => {
+        const unsubscribeAuth = onAuthStateChanged(auth, (fbUser) => {
             setFirebaseUser(fbUser);
             if (!fbUser) {
                 setUser(null);
                 setIsLoggedIn(false);
-            } else {
-                // The profile creation is now primarily handled by the getRedirectResult
-                // but we can keep this as a fallback for other auth methods.
-                await getOrCreateUserProfile(fbUser, firestore);
             }
         });
 
         return () => unsubscribeAuth();
-    }, [auth, firestore]);
+    }, [auth]);
 
 
     // Effect for listening to user profile and subcollections data
@@ -314,9 +324,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                 updateUserState();
 
             } else {
-                // If doc doesn't exist, it might be a new user (incl. wallet user).
-                // Let's rely on the sign-in methods to create the profile.
-                // We set isLoggedIn to false to prevent a flicker of the logged-in UI.
                 setIsLoggedIn(false);
             }
         }, (error) => {
@@ -349,31 +356,38 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const signInWithGoogle = async () => {
         if (!auth || !firestore) throw new Error('Firebase not initialized');
         const provider = new GoogleAuthProvider();
-        // Using signInWithRedirect instead of signInWithPopup
-        await signInWithRedirect(auth, provider);
+        try {
+            const result = await signInWithPopup(auth, provider);
+            await getOrCreateUserProfile(result.user, firestore);
+            toast({
+                title: "Signed In Successfully",
+                description: `Welcome back, ${result.user.displayName}!`,
+            });
+        } catch (error: any) {
+            console.error("Google sign-in error:", error);
+            toast({
+                variant: "destructive",
+                title: "Google Sign-In Failed",
+                description: "Could not sign in with Google. Please ensure pop-ups are enabled and try again."
+            });
+        }
     };
 
     const handleWalletSignIn = async (walletAddress: string, walletType: 'MetaMask' | 'Phantom') => {
         if (!auth || !firestore) throw new Error('Firebase not initialized');
-
-        // Wallet addresses are case-insensitive, but good practice to standardize.
         const standardizedAddress = walletAddress.toLowerCase();
 
-        // We'll use the wallet address as the UID for an anonymous Firebase user.
-        // This provides a stable UID for session management and data storage.
         await signInAnonymously(auth);
         const anonUser = auth.currentUser;
 
         if (!anonUser) throw new Error("Failed to create an anonymous session for wallet user.");
 
-        // The UID for the user document will now be the stable anonymous user UID.
         const userDocRef = doc(firestore, 'users', anonUser.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (!userDoc.exists()) {
             await getOrCreateUserProfile(anonUser, firestore, `${walletType} User (${standardizedAddress.substring(0, 6)}...)`, true);
         }
-        // The onAuthStateChanged listener will handle setting the user state.
     };
 
     const signInWithMetaMask = async () => {
