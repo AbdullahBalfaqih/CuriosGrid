@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { sendContactEmail } from '@/ai/flows/send-contact-email';
-import a from "./contact.png";
+import a from "./a2.png";
 
 export const ContactSection = () => {
     const x = useMotionValue(0);

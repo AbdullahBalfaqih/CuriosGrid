@@ -89,7 +89,7 @@ const CountryDropdown = ({
                         ) : (
                             filteredCountries.map(country => (
                                 <button key={country.code} onClick={() => onSelectRegion(country)} className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 hover:bg-neutral-900 text-neutral-400 hover:text-white transition-colors">
-                                    <img src={getFlagUrl(country.code, 20)} alt={`${country.name} flag`} className="w-5 h-auto" /> {country.name}
+                                    <img src={getFlagUrl(country.code, 20)} alt={`${country.name} flag`} className="w-5 h-auto rounded-sm" /> {country.name}
                                 </button>
                             ))
                         )}
@@ -241,11 +241,11 @@ const MainDashboard = ({ activeRegion, onRegionChange }: { activeRegion: Country
                             <Link href="/"><CurioGridLogo /></Link>
                             <Link href="/"><span className="hidden sm:inline text-2xl font-bold tracking-tight">CurioGrid</span></Link>
 
-                            <div className={`ml-2 sm:ml-4 px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-2 transition-colors ${isPending
-                                    ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                            <div className={`ml-2 sm:ml-4 text-xs font-bold flex items-center gap-2 transition-colors ${isPending
+                                    ? 'text-blue-400'
                                     : isRealData
-                                        ? 'bg-primary/10 text-primary border-primary/20'
-                                        : 'bg-red-500/10 text-red-400 border-red-500/20'
+                                        ? 'text-primary'
+                                        : 'text-red-400'
                                 }`}>
                                 {getStatusIcon()}
                                 {getStatusText()}
@@ -256,7 +256,7 @@ const MainDashboard = ({ activeRegion, onRegionChange }: { activeRegion: Country
                             <div className="relative" ref={dropdownRef}>
                                 <button onClick={handleRegionDropdownToggle} className="flex items-center gap-3 bg-neutral-900 hover:bg-neutral-800 border border-border py-2.5 pl-4 pr-3 rounded-full transition-all min-w-[180px] justify-between group">
                                     <span className="flex items-center gap-3">
-                                        <img src={getFlagUrl(activeRegion.code, 20)} alt={`${activeRegion.name} flag`} className="w-5 h-auto" />
+                                        <img src={getFlagUrl(activeRegion.code, 20)} alt={`${activeRegion.name} flag`} className="w-5 h-auto rounded-sm" />
                                         <span className="font-medium text-sm text-neutral-300 group-hover:text-white">{activeRegion.name}</span>
                                     </span>
                                     <ChevronDown size={16} className={`text-neutral-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -288,7 +288,7 @@ const MainDashboard = ({ activeRegion, onRegionChange }: { activeRegion: Country
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         <h1 className="text-5xl font-bold text-white mb-4 flex items-center gap-4">
                             Trends in {activeRegion.name}
-                            <img src={getFlagUrl(activeRegion.code, 40)} alt={`${activeRegion.name} flag`} className="w-12 h-auto shadow-2xl opacity-80" />
+                            <img src={getFlagUrl(activeRegion.code, 40)} alt={`${activeRegion.name} flag`} className="w-12 h-auto shadow-2xl opacity-80 rounded-md" />
                         </h1>
                         <p className="text-neutral-400 text-lg max-w-2xl">{isPending ? "Connecting to global pulse network..." : isRealData ? "Displaying live trends from the global pulse network." : "Displaying pre-compiled trend data. Live connection unavailable."}</p>
                     </motion.div>

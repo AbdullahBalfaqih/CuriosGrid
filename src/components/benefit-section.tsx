@@ -10,24 +10,26 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { LogoCloud } from './logo-cloud';
-
+import a from "./a3.png";
+import b from "./a3.png";
+import c from "./a5.png";
 const benefits = [
   {
     title: "Content Creation",
     description: "Generate engaging social media posts, image prompts, and video scripts based on the latest trends to keep your audience hooked.",
-    image: "https://i.ibb.co/RchF2v1/image.png",
+    image: a,
     imageHint: "creative workspace"
   },
   {
     title: "Marketing & Advertising",
     description: "Tailor your marketing campaigns to what's currently capturing attention. Create relevant ads and promotional content that converts.",
-    image: "https://i.ibb.co/rGvrgq0/image-removebg-preview.png",
+    image:b,
     imageHint: "marketing analytics"
   },
   {
     title: "E-commerce & Sales",
     description: "Automate product descriptions, generate promotional ideas, and align your sales strategy with trending products and topics.",
-    image: "https://images.unsplash.com/photo-1604014237800-1c9102c219da?q=80&w=1080&auto=format&fit=crop",
+    image: c,
     imageHint: "online shopping"
   },
 ];
