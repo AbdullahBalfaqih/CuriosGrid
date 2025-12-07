@@ -413,14 +413,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const signInWithPhantom = async () => {
+        const phantomUrl = `https://phantom.app/ul/v1/connect?app_url=${encodeURIComponent(window.location.origin)}&redirect_link=${encodeURIComponent(window.location.href)}`;
+
         if (isMobileDevice()) {
-            const deepLink = new URL('https://phantom.app/ul/v1/connect');
-            deepLink.searchParams.set('app_url', window.location.origin);
-            deepLink.searchParams.set('redirect_link', window.location.href);
-            window.location.href = deepLink.toString();
+            window.location.href = phantomUrl;
             return;
         }
+
         if (typeof window.phantom?.solana === 'undefined') {
+            window.open(phantomUrl, '_blank');
             throw new Error('Phantom wallet is not installed. Please install it to use this feature.');
         }
         try {
