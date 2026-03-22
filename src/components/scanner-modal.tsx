@@ -2,16 +2,16 @@
 
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X, Search, ShieldAlert, ShieldCheck, Copy, ExternalLink } from 'lucide-react';
+import { X, Search, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { useUser } from '@/hooks/use-user';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from './ui/button';
 import Image from 'next/image';
 import type { TransactionRecord } from '@/lib/user-provider';
-import { format } from 'date-fns';
+import { NftCertificateCard } from './nft-certificate';
 
 const SolanaLogo = () => (
-    <Image src="https://cryptologos.cc/logos/solana-sol-logo.svg?v=040" alt="Solana" width={28} height={28} />
+    <img src="https://res.cloudinary.com/ddznxtb6f/image/upload/v1773261825/image-removebg-preview_58_kiweyh.png" alt="Solana" style={{width: 28, height: 28}} />
 );
 
 interface ScannerModalProps {
@@ -67,12 +67,6 @@ export const ScannerModal = ({ onClose }: ScannerModalProps) => {
     setSearchResult(null);
   };
 
-  const copyToClipboard = (text: string, subject: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-        toast({ title: `${subject} Copied`, description: "Copied to clipboard successfully." });
-    });
-  }
-
   const renderResult = () => {
     if (isLoading) {
       return (
@@ -101,58 +95,7 @@ export const ScannerModal = ({ onClose }: ScannerModalProps) => {
     }
 
     if (searchResult) {
-        return (
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-8 bg-neutral-900/50 rounded-2xl border border-border w-full"
-            >
-                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border">
-                    <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center shrink-0">
-                        <ShieldCheck size={28} />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-bold text-white">Transaction Verified</h3>
-                        <p className="text-neutral-400">This content was authenticated on Solana.</p>
-                    </div>
-                </div>
-                 <div className="space-y-4 text-sm font-code">
-                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                        <span className="text-neutral-500 font-sans shrink-0">Topic</span>
-                        <span className="text-white font-medium font-sans text-left sm:text-right truncate">{searchResult.topic}</span>
-                    </div>
-                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                        <span className="text-neutral-500 font-sans shrink-0">Timestamp</span>
-                        <span className="text-white font-medium">{format(new Date(searchResult.createdAt), "dd MMM yyyy, HH:mm:ss")}</span>
-                    </div>
-                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                        <span className="text-neutral-500 font-sans shrink-0">Signature</span>
-                        <div className="flex items-center gap-2 justify-start sm:justify-end min-w-0">
-                            <a href={`https://explorer.solana.com/tx/${searchResult.signature}?cluster=devnet`} target="_blank" rel="noopener noreferrer" className="text-primary truncate hover:underline">
-                               {searchResult.signature}
-                            </a>
-                            <Button variant="ghost" size="icon" className="w-7 h-7 text-neutral-400 hover:text-white shrink-0" onClick={() => copyToClipboard(searchResult.signature, "Signature")}>
-                                <Copy size={14} />
-                            </Button>
-                            <a href={`https://explorer.solana.com/tx/${searchResult.signature}?cluster=devnet`} target="_blank" rel="noopener noreferrer">
-                                <Button variant="ghost" size="icon" className="w-7 h-7 text-neutral-400 hover:text-white shrink-0">
-                                    <ExternalLink size={14} />
-                                </Button>
-                            </a>
-                        </div>
-                    </div>
-                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                        <span className="text-neutral-500 font-sans shrink-0">Content Hash</span>
-                        <div className="flex items-center gap-2 justify-start sm:justify-end min-w-0">
-                            <span className="text-white truncate">{searchResult.hash}</span>
-                             <Button variant="ghost" size="icon" className="w-7 h-7 text-neutral-400 hover:text-white shrink-0" onClick={() => copyToClipboard(searchResult.hash, "Hash")}>
-                                <Copy size={14} />
-                            </Button>
-                        </div>
-                    </div>
-                 </div>
-            </motion.div>
-        )
+        return <NftCertificateCard tx={searchResult} />;
     }
 
     return null;
@@ -202,7 +145,7 @@ export const ScannerModal = ({ onClose }: ScannerModalProps) => {
                 </div>
             </form>
 
-            <div className="min-h-[280px] flex items-center justify-center">
+            <div className="min-h-[380px] flex items-center justify-center">
               {renderResult()}
             </div>
           </div>

@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import {
-  MessageSquare, ImageIcon, Video, Bot, CreditCard, Shield, LogOut, ArrowUpRight, Copy, ExternalLink, Settings, Star
+  MessageSquare, ImageIcon, Video, Bot, CreditCard, Shield, LogOut, ArrowUpRight, Copy, ExternalLink, Settings, Star, UserCog
 } from 'lucide-react';
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
+import { NftCertificateCard } from './nft-certificate';
 
 const UsageBar = ({ label, used, total, icon: Icon }: { label: string, used: number, total: number, icon: React.ElementType }) => {
   const percentage = total === 0 ? 100 : total === -1 ? 0 : (used / total) * 100;
@@ -30,39 +30,6 @@ const UsageBar = ({ label, used, total, icon: Icon }: { label: string, used: num
         <Progress value={percentage} className="h-2" indicatorClassName={isUnlimited ? 'bg-gradient-to-r from-purple-400 to-pink-500' : 'bg-primary'} />
     </div>
   );
-}
-
-const TransactionRow = ({ tx }: { tx: any }) => {
-    const { toast } = useToast();
-    const copyToClipboard = (text: string, subject: string) => {
-        navigator.clipboard.writeText(text).then(() => {
-            toast({ title: `${subject} Copied`, description: text });
-        });
-    }
-
-    return (
-        <div className="grid grid-cols-3 gap-6 items-center py-4 px-2 hover:bg-neutral-900 rounded-lg">
-            <div className="col-span-1">
-                <p className="text-sm font-medium text-white truncate">{tx.topic}</p>
-                <p className="text-xs text-neutral-500">{formatDistanceToNow(new Date(tx.createdAt), { addSuffix: true })}</p>
-            </div>
-            <div className="col-span-1">
-                 <div className="flex items-center gap-2">
-                    <p className="text-sm font-mono text-neutral-400 truncate">{tx.hash}</p>
-                    <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => copyToClipboard(tx.hash, "Hash")}>
-                        <Copy size={14} />
-                    </Button>
-                </div>
-            </div>
-            <div className="col-span-1 flex justify-end">
-                <a href={`https://explorer.solana.com/tx/${tx.signature}?cluster=devnet`} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="h-8 bg-neutral-800 border-border hover:bg-neutral-700 hover:text-white">
-                        <ExternalLink size={14} className="mr-2"/> View TX
-                    </Button>
-                </a>
-            </div>
-        </div>
-    )
 }
 
 export default function UserDashboard() {
@@ -90,6 +57,7 @@ export default function UserDashboard() {
 
   const planName = user.plan;
   const isPro = planName === 'Pro' || planName === 'Yearly';
+  const isAdmin = user.name === 'Admin';
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12 w-full flex-1">
@@ -99,6 +67,13 @@ export default function UserDashboard() {
           <p className="text-lg text-neutral-400">{user.email || 'No email associated'}</p>
         </div>
          <div className="flex items-center gap-2">
+            {isAdmin && (
+                 <Link href="/dashboard/admin">
+                    <Button variant="outline" className="bg-card hover:bg-neutral-800">
+                        <UserCog size={20} className="mr-2"/> Admin Panel
+                    </Button>
+                </Link>
+            )}
              <Button variant="ghost" className="text-red-500 hover:bg-red-500/10 hover:text-red-400" onClick={handleLogout}>
                  <LogOut size={20} className="mr-2"/> Logout
              </Button>
@@ -118,24 +93,19 @@ export default function UserDashboard() {
             </div>
             <div className="bg-card border border-border rounded-3xl p-8">
                 <h2 className="text-2xl font-bold text-white mb-2">Content Authentication</h2>
-                <p className="text-neutral-400 mb-6">Your recent on-chain content authentications on Solana Devnet.</p>
+                <p className="text-neutral-400 mb-6">Your gallery of digital assets. Each certificate is a proof-of-ownership on Solana, with the potential to be traded in the future.</p>
                 
-                <div className="divide-y divide-border">
-                    <div className="grid grid-cols-3 gap-6 pb-2 text-sm font-semibold text-neutral-500 px-2">
-                        <span>Topic</span>
-                        <span>Content Hash</span>
-                        <span className="text-right">Transaction</span>
+                 {user.transactions && user.transactions.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {user.transactions.map(tx => <NftCertificateCard key={tx.id} tx={tx} />)}
                     </div>
-                     {user.transactions && user.transactions.length > 0 ? (
-                        user.transactions.slice(0, 5).map(tx => <TransactionRow key={tx.id} tx={tx} />)
-                    ) : (
-                        <div className="text-center py-16">
-                            <Shield size={40} className="mx-auto text-neutral-700 mb-4"/>
-                            <h3 className="text-xl font-bold text-neutral-500">No Transactions Yet</h3>
-                            <p className="text-neutral-600">Authenticated content will appear here.</p>
-                        </div>
-                    )}
-                </div>
+                ) : (
+                    <div className="text-center py-16 border-2 border-dashed border-border rounded-2xl">
+                        <Shield size={40} className="mx-auto text-neutral-700 mb-4"/>
+                        <h3 className="text-xl font-bold text-neutral-500">No Certificates Yet</h3>
+                        <p className="text-neutral-600">Authenticated content will appear here.</p>
+                    </div>
+                )}
             </div>
         </div>
 

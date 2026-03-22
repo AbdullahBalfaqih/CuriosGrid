@@ -72,7 +72,7 @@ interface HeroSectionProps {
 
 const SolanaScannerIcon = () => (
     <div className="relative w-6 h-6">
-        <Image src="https://cryptologos.cc/logos/solana-sol-logo.svg?v=040" alt="Solana" width={24} height={24} className="absolute inset-0" />
+        <img src="https://res.cloudinary.com/ddznxtb6f/image/upload/v1773261825/image-removebg-preview_58_kiweyh.png" alt="Solana" className="absolute inset-0 w-full h-full object-contain" />
     </div>
 );
 

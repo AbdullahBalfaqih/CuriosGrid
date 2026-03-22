@@ -7,6 +7,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const GenerateSocialMediaPostInputSchema = z.object({
@@ -32,6 +33,7 @@ const generateSocialMediaPostPrompt = ai.definePrompt({
   prompt: `You are a social media expert. Generate a social media post about the following topic for {{platform}}:
 
 Topic: {{topic}}`,
+  model: 'googleai/gemini-2.5-flash',
 });
 
 const generateSocialMediaPostFlow = ai.defineFlow(

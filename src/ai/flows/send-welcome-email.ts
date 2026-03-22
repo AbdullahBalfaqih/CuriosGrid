@@ -8,6 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 import nodemailer from 'nodemailer';
 
@@ -29,6 +30,7 @@ const welcomeEmailPrompt = ai.definePrompt({
 Generate a short and welcoming email for a new subscriber with the email "{{email}}".
 The subject should be "Welcome to CurioGrid!".
 The body text should thank them for joining and briefly mention they will get the latest AI trends. Keep it concise.`,
+  model: 'googleai/gemini-2.5-flash',
 });
 
 const createHtmlTemplate = (content: string) => {

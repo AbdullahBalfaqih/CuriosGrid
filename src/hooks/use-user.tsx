@@ -1,4 +1,3 @@
-// This file is deprecated. Please use the provider in /src/lib/user-provider.tsx instead.
 "use client";
 
 import { useContext } from 'react';

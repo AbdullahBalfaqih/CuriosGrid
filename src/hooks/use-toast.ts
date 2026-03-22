@@ -34,6 +34,8 @@ function genId() {
 
 type ActionType = typeof actionTypes
 
+type Toast = Omit<ToasterToast, "id">;
+
 type Action =
   | {
       type: ActionType["ADD_TOAST"]
@@ -41,7 +43,7 @@ type Action =
     }
   | {
       type: ActionType["UPDATE_TOAST"]
-      toast: Partial<ToasterToast>
+      toast: Partial<ToasterToast> & { id: string }
     }
   | {
       type: ActionType["DISMISS_TOAST"]
@@ -140,12 +142,11 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
 
 function toast({ ...props }: Toast) {
   const id = genId()
 
-  const update = (props: ToasterToast) =>
+  const update = (props: Partial<Toast>) =>
     dispatch({
       type: "UPDATE_TOAST",
       toast: { ...props, id },

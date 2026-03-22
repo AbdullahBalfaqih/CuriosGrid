@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const GenerateImagePromptInputSchema = z.object({
@@ -35,6 +36,7 @@ const prompt = ai.definePrompt({
 
   Generate an image prompt that can be used to generate an image of the trending topic. The image prompt should be detailed and creative.
   `,
+  model: 'googleai/gemini-2.5-flash',
 });
 
 const generateImagePromptFlow = ai.defineFlow(

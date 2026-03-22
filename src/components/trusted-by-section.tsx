@@ -4,35 +4,15 @@ import React from 'react';
 import { motion, useInView } from 'framer-motion';
 import { CountUp } from './count-up';
 import Image from 'next/image';
-import a from "./AI.png";
-import b from "./Trend.png";
-import c from "./content.png";
-import d from "./time.png";
 
 const stats = [
-    { value: 99, suffix: '%', label: 'Uptime', heightClass: 'h-48', imageUrl: d, imageHint: 'server lights' },
-    { value: 4, suffix: 'M+', label: 'Trends Analyzed', heightClass: 'h-48', imageUrl: b, imageHint: 'data chart' },
-    { value: 25, suffix: 'K', label: 'Creators Active', heightClass: 'h-48', imageUrl: c, imageHint: 'people community' },
-    { value: 12, suffix: '', label: 'AI Models', heightClass: 'h-48', imageUrl: a, imageHint: 'abstract nodes' },
+  { value: 99, suffix: '%', label: 'Uptime', heightClass: 'h-32', imageUrl: '/images/uptime.png', imageHint: 'server lights' },
+  { value: 4, suffix: 'M+', label: 'Trends Analyzed', heightClass: 'h-48', imageUrl: '/images/trends.png', imageHint: 'data chart' },
+  { value: 25, suffix: 'K', label: 'Creators Active', heightClass: 'h-32', imageUrl: '/images/creators.png', imageHint: 'people community' },
+  { value: 12, suffix: '', label: 'AI Models', heightClass: 'h-40', imageUrl: '/images/ai.png', imageHint: 'abstract nodes' },
 ];
 
-const StatCard = ({
-    value,
-    suffix,
-    label,
-    heightClass,
-    imageUrl,
-    imageHint,
-    index
-}: {
-    value: number;
-    suffix: string;
-    label: string;
-    heightClass: string;
-    imageUrl: any; // StaticImageData
-    imageHint: string;
-    index: number;
-}) => {
+const StatCard = ({ value, suffix, label, heightClass, imageUrl, imageHint, index }: { value: number; suffix: string; label: string; heightClass: string; imageUrl: string; imageHint: string; index: number }) => {
     const ref = React.useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -48,13 +28,14 @@ const StatCard = ({
                 src={imageUrl}
                 alt={label}
                 fill
-                className="object-fill w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-110"
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+                className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
                 data-ai-hint={imageHint}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
             <div className="relative z-10">
-                <CountUp
-                    value={value}
+                <CountUp 
+                    value={value} 
                     className="text-6xl font-bold text-white mb-1"
                     suffix={suffix}
                 />
@@ -70,7 +51,7 @@ export const TrustedBySection = () => {
 
     return (
         <section ref={ref} className="w-full max-w-7xl mx-auto py-24 px-6">
-            <motion.div
+            <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0 }}

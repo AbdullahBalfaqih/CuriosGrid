@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const DeployAIAgentInputSchema = z.object({
@@ -43,6 +44,7 @@ Consider the best strategy to generate high user engagement.
 
 Output the AI agent name, status and preview.
 `,
+  model: 'googleai/gemini-2.5-flash',
 });
 
 const deployAIAgentFlow = ai.defineFlow(

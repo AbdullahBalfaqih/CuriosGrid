@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -11,6 +10,7 @@ import { TickerSection } from "@/components/ticker-section";
 import type { Country } from '@/lib/types';
 import { BenefitSection } from '@/components/benefit-section';
 import { Web3Intro } from '@/components/web3-intro';
+import { Leaderboard } from '@/components/leaderboard';
 
 
 export default function Home() {
@@ -23,6 +23,7 @@ export default function Home() {
         <Web3Intro />
         <TrustedBySection />
         <BenefitSection />
+        <Leaderboard />
 
         <section className="w-full max-w-7xl mx-auto py-24 px-6">
             <h2 className="text-5xl font-bold text-center text-white mb-4">Choose Your Plan</h2>

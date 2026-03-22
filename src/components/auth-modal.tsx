@@ -97,7 +97,7 @@ export const AuthModal = ({ onClose }: AuthModalProps) => {
       router.push('/dashboard');
     } catch (error: any) {
       console.error(`${type} failed`, error);
-      const friendlyMessage = getFriendlyErrorMessage(error.code);
+      const friendlyMessage = error && error.code ? getFriendlyErrorMessage(error.code) : 'An unexpected error occurred. Please check your credentials and try again.';
       toast({
         variant: "destructive",
         title: `${type === 'signin' ? 'Sign In' : 'Sign Up'} Failed`,
@@ -120,7 +120,7 @@ export const AuthModal = ({ onClose }: AuthModalProps) => {
       router.push('/dashboard');
     } catch (error: any) {
       console.error("Google Sign In failed", error);
-      const friendlyMessage = getFriendlyErrorMessage(error.code);
+      const friendlyMessage = error && error.code ? getFriendlyErrorMessage(error.code) : 'An unexpected error occurred. Please try again.';
       toast({
         variant: "destructive",
         title: "Google Sign In Failed",
@@ -134,23 +134,30 @@ export const AuthModal = ({ onClose }: AuthModalProps) => {
   const handleMetaMaskSignIn = async () => {
     setIsLoading('metamask');
     try {
-      const result = await signInWithMetaMask();
-      if (result !== null) {
-        toast({
-          title: 'MetaMask Connected!',
-          description:
-            'You have successfully connected your MetaMask wallet.',
-        });
-        onClose();
-        router.push('/dashboard');
-      }
+      await signInWithMetaMask();
+      toast({
+        title: 'MetaMask Connected!',
+        description: 'You have successfully connected your MetaMask wallet.',
+      });
+      onClose();
+      router.push('/dashboard');
     } catch (error: any) {
       console.error('MetaMask Sign In failed', error);
+      let description = 'Could not connect to MetaMask. Please try again.';
+      let action;
+
+      if (error.code === 4001) {
+        description = 'You rejected the connection request in your wallet.';
+      } else if (error.code === 'METAMASK_NOT_INSTALLED') {
+        description = 'Please install the MetaMask browser extension to continue.';
+        action = <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="bg-white text-black font-bold py-1 px-3 rounded-md">Install</a>;
+      }
+
       toast({
         variant: 'destructive',
         title: 'MetaMask Sign In Failed',
-        description:
-          error.message || 'Could not connect to MetaMask. Please try again.',
+        description: description,
+        action: action,
       });
     } finally {
       setIsLoading(false);
@@ -158,33 +165,33 @@ export const AuthModal = ({ onClose }: AuthModalProps) => {
   };
 
   const handlePhantomSignIn = async () => {
-    if (typeof window.phantom?.solana === 'undefined') {
-        toast({
-            variant: "destructive",
-            title: "Phantom Wallet Not Found",
-            description: "Please install the Phantom wallet extension to sign in.",
-        });
-        return;
-    }
     setIsLoading('phantom');
     try {
-      const result = await signInWithPhantom();
-      if (result !== null) {
-        toast({
-          title: 'Phantom Connected!',
-          description:
-            'You have successfully connected your Phantom wallet.',
-        });
-        onClose();
-        router.push('/dashboard');
-      }
+      await signInWithPhantom();
+      toast({
+        title: 'Phantom Connected!',
+        description: 'You have successfully connected your Phantom wallet.',
+      });
+      onClose();
+      router.push('/dashboard');
     } catch (error: any) {
       console.error('Phantom Sign In failed', error);
+      
+      let description = "Could not connect to Phantom. Please try again.";
+      let action;
+
+      if (error.code === 'PHANTOM_NOT_INSTALLED') {
+          description = "Please install the Phantom browser extension to continue.";
+          action = <a href="https://phantom.app/download" target="_blank" rel="noopener noreferrer" className="bg-white text-black font-bold py-1 px-3 rounded-md">Install</a>
+      } else if (error.message?.includes('User rejected')) {
+          description = 'You rejected the connection request in your wallet.';
+      }
+
       toast({
         variant: 'destructive',
         title: 'Phantom Sign In Failed',
-        description:
-          error.message || 'Could not connect to Phantom. Please try again.',
+        description: description,
+        action: action,
       });
     } finally {
       setIsLoading(false);

@@ -135,9 +135,9 @@ export default function DraftsPage() {
   
     if (typeof draft.content === 'string') {
       textContent = draft.content;
-    } else if (draft.type === 'image' && draft.content && typeof draft.content === 'object' && 'prompt' in draft.content && 'url' in draft.content) {
+    } else if (draft.type === 'image' && draft.content && typeof draft.content === 'object' && 'prompt' in draft.content && 'imageUrl' in draft.content) {
       textContent = draft.content.prompt;
-      urlContent = draft.content.url;
+      urlContent = draft.content.imageUrl; // Use imageUrl
     } else if (draft.content && typeof draft.content === 'object' && 'post' in draft.content) {
       textContent = draft.content.post;
     }

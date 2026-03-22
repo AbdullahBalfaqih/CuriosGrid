@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import { MapPin, Mail, Phone, Loader2 } from 'lucide-react';
@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { sendContactEmail } from '@/ai/flows/send-contact-email';
-import a from "./a2.png";
 
 export const ContactSection = () => {
     const x = useMotionValue(0);
@@ -116,11 +115,11 @@ export const ContactSection = () => {
                         <fieldset disabled={isLoading}>
                             <div className="space-y-2">
                                 <label htmlFor="name" className="text-sm font-medium text-neutral-300">Your name</label>
-                                <Input id="name" name="name" type="text" placeholder="Your name" value={formData.name} onChange={handleChange} className="bg-neutral-900 border-neutral-800 rounded-xl h-12 focus-visible:ring-primary/50" />
+                                <Input id="name" name="name" type="text" placeholder="John Doe" value={formData.name} onChange={handleChange} className="bg-neutral-900 border-neutral-800 rounded-xl h-12 focus-visible:ring-primary/50" />
                             </div>
                             <div className="space-y-2 mt-4">
                                 <label htmlFor="email" className="text-sm font-medium text-neutral-300">Your email</label>
-                                <Input id="email" name="email" type="email" placeholder="Your email" value={formData.email} onChange={handleChange} className="bg-neutral-900 border-neutral-800 rounded-xl h-12 focus-visible:ring-primary/50" />
+                                <Input id="email" name="email" type="email" placeholder="john@example.com" value={formData.email} onChange={handleChange} className="bg-neutral-900 border-neutral-800 rounded-xl h-12 focus-visible:ring-primary/50" />
                             </div>
                             <div className="space-y-2 mt-4">
                                 <label htmlFor="message" className="text-sm font-medium text-neutral-300">Your message</label>
@@ -134,14 +133,13 @@ export const ContactSection = () => {
                         </fieldset>
                     </form>
                 </div>
-                <div style={{ transform: "translateZ(20px)" }} className="relative min-h-[200px] lg:min-h-full">
-                    <Image
-                        src={a}
+                 <div style={{ transform: "translateZ(20px)" }} className="relative min-h-[400px] lg:min-h-full">
+                    <Image 
+                        src="/images/contact.png" 
                         alt="Contact support"
                         fill
-                        className="object-fill"   // ← Stretch
+                        className="object-cover"
                     />
-
                 </div>
             </motion.div>
         </motion.section>

@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const GenerateAiScriptInputSchema = z.object({
@@ -44,6 +45,7 @@ const prompt = ai.definePrompt({
 "time": "0:15",
 "text": "Here is what you need to know."
 }]`,
+  model: 'googleai/gemini-2.5-flash',
 });
 
 const generateAiScriptFlow = ai.defineFlow(

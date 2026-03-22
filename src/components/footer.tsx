@@ -156,8 +156,7 @@ export const Footer = () => {
                            </div>
                         </Link>
                         <div className="flex gap-2">
-                        
-
+                            <SocialIcon href="https://www.tiktok.com/@curiogrid" src="https://framerusercontent.com/images/1le1sT93T5FjXfQcK6p4w4pS8.svg" alt="TikTok" />
                             <SocialIcon href="https://x.com/CurioGrid" src="https://framerusercontent.com/images/0MF1gIwlv0MwZa51idvtRUAHzEo.svg" alt="X" />
                             <SocialIcon href="https://www.instagram.com/curiogrid" src="https://framerusercontent.com/images/jDxxw2DrZnM2DJFE4iDRbGMykg.svg" alt="Instagram" />
                         </div>
@@ -166,7 +165,7 @@ export const Footer = () => {
                         </p>
                     </div>
 
-                     <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+                     <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
                         <div>
                             <h3 className="font-bold text-white mb-4">Main Pages</h3>
                             <ul className="space-y-3">
@@ -176,15 +175,19 @@ export const Footer = () => {
                                 <li><Link href="/contact" className="text-neutral-400 hover:text-primary transition-colors">Contact us</Link></li>
                             </ul>
                         </div>
+                         <div>
+                            <h3 className="font-bold text-white mb-4">Marketplace</h3>
+                            <ul className="space-y-3">
+                                <li><Link href="/marketplace" className="text-neutral-400 hover:text-primary transition-colors">Auctions</Link></li>
+                            </ul>
+                        </div>
                         <div>
                             <h3 className="font-bold text-white mb-4">Company</h3>
                             <ul className="space-y-3">
-                                <li><Link href="/about" className="text-neutral-400 hover:text-primary transition-colors">About</Link></li>
                                 <li><Link href="/privacy" className="text-neutral-400 hover:text-primary transition-colors">Privacy Policy</Link></li>
                                  <li><Link href="/terms" className="text-neutral-400 hover:text-primary transition-colors">Terms of Service</Link></li>
                             </ul>
                         </div>
-                     
                     </div>
                 </div>
             </div>
